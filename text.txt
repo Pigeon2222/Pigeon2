@@ -1,3 +1,4 @@
+
 ★23.2.1.수
 -OJT교육 1일차
  근로계약서 및 인사서류 작성
@@ -143,14 +144,16 @@
 
 git config --global user.name "Pigeon2222"
 git config --global user.email "ascv131@naver.com"
+git config --global core.autocrlf false
 git init
 git remote add origin https://github.com/Pigeon2222/YJ.git
 git remote -v
 
-git pull origin main
+git pull origin master
 
+git config --global core.autocrlf true
 git add .
-git commit -m "Update text.txt"
+git commit -m "Update 자료"
 git push -u origin master
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -276,25 +279,52 @@ TCP
  자동회신 기능
 
 예정
- 제어문자 입력 // \뒤에 숫자3개 및 제어문자가 오면 아스키코드로 변환하여 전송
+ 제어문자 입력
  타임아웃
  클래스화
  종료시 에러막기
  종료시 글자 및 색 변경
 
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
+★23.2.9.목
+-SW OJT교육 4일차
+ TCP/IP 서버 및 클라이언트 통신 프로그램 구현
+
+●
+키엔스 측정기 목표 및 추출값- 의도한 위치에 정확히 마킹하기 위한 계산식 도출, 기울기(x,y,z), 평행이동(x,y)
+
+◆
+완료
+ 타임아웃
+ 종료시 에러막기
+ 종료시 글자 및 색 변경
+
+예정
+ 제어문자 입력
+ 클래스화
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
-★
+★23.2.10.금
+-SW OJT교육 5일차
+ TCP/IP 서버 및 클라이언트 통신 프로그램 구현
 
 ●
 
 ◆
+완료
+
+
+예정
+ 제어문자 입력
+ 클래스화
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 ★
 ●
 ◆
-■명함첩, 사물함, 모니터, 카탈로그, 공정ppt
+■명함첩, 장비사용법정리
+사물함, 노트북키8개
+모니터, 카탈로그, 공정ppt
