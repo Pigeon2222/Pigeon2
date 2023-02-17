@@ -461,14 +461,15 @@ ppt(진행현황, 피드백조치)
 
 ppt(진행현황, 피드백조치)
 
+다이어그램 및 클래스
+
 다른 클래스에서 폼 객체값 받을 방법 찾기
 https://greensul.tistory.com/46
 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=zezesoul&logNo=120207379386
 https://seollica.tistory.com/97
-richTextBox1.AppendText($"[G] {code}{word} ON // " + receiveString);
 
 크로스 스레드 에러(인보크)
-다이어그램 및 클래스
+richTextBox1.Invoke((MethodInvoker)delegate { richTextBox1.AppendText(str + "\n"); });
 
 DT는 왜 안되는가
 왜 109까지 되는가
