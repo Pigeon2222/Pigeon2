@@ -144,16 +144,16 @@
 
 git config --global user.name "Pigeon2222"
 git config --global user.email "ascv131@naver.com"
-git config --global core.autocrlf false
+git config --global core.autocrlf true
 git init
 git remote add origin https://github.com/Pigeon2222/YJ.git
 git remote -v
+github main > master 이름 변경
 
 git pull origin master
 
-git config --global core.autocrlf true
 git add .
-git commit -m "Update 자료"
+git commit -m "230101 0000"
 git push -u origin master
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
