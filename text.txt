@@ -144,11 +144,11 @@
 
 git config --global user.name "Pigeon2222"
 git config --global user.email "ascv131@naver.com"
-git config --global core.autocrlf true
 git init
 git remote add origin https://github.com/Pigeon2222/YJ.git
 git remote -v
 github main > master 이름 변경
+git config --global core.autocrlf true
 
 git pull origin master
 
@@ -680,6 +680,17 @@ git reset HEAD~n
 -깃 고장시 강제 풀, 수정내용은 반드시 사전에 백업
 git fetch --all
 git reset --hard origin/master
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.2.27.월
+-UDP 7일차
+
+●
+
+
+◆
+
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
