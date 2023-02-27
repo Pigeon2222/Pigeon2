@@ -687,7 +687,11 @@ git reset --hard origin/master
 -UDP 7일차
 
 ●
-
+ 컨베이어 생성자에서 선언
+ 컨베이어에서 폭과 에러 빼고 각각의 클래스에 넣기
+ 에러클리어 버튼 비활성화 빼기
+ IO맵 더블클릭으로 접점 켜고 끄기
+ 생성자 매개변수로 객체 생성
 
 ◆
 
@@ -699,12 +703,11 @@ git reset --hard origin/master
 ◆
 ■
 
-카탈로그, 레이저장비실습, 이름표, 프린트, 파일명규칙, 와이파이
-장비사용법정리, 렌즈액, 에어컨배터리, 옷걸이1, 빗, 거울, 쓰래기봉투
+레이저장비실습, 이름표
 
-환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 
+카탈로그, 프린트, 파일명규칙, 와이파이, 장비사용법정리, 에어컨배터리
 
-IO이해, 필요기능파악, 순서도, 모터제어, DT, 개별IO컨트롤, 객체정리
+환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, 순서도, 스메마, 시퀀스구현, DT, 타임아웃, 객체정리
 
 
 
@@ -724,8 +727,6 @@ public void Home()
             m_homeThread = new Thread(delegate () { HomeSequence(m_mode, m_homeDirection); });
             m_homeThread.Start();
         }
-
-
 public ICommand MachineBtnCommand
         {
             get
@@ -812,6 +813,8 @@ X0029   CONV_SERVO_ALARM
 ★X002C   IN_SHUTTLE_OPEN_SENSOR   // 셔터 열림상태
 ★X002D   IN_SHUTTLE_CLOSE_SENSOR // 셔터 닫힘상태
 
+
+
 ■Y0000   WIDTH_SERVO_CW 
 ■Y0001   WIDTH_SERVO_CCW
 ■Y0003   CONV_SERVO_CW
@@ -827,31 +830,67 @@ Y0021   WIDTH_SERVO_ALARM_RESET
 Y0023   CONV_SERVO_ALARM_RESET
 ★Y0029   IN_SHUTTLE_CLOSE   // 셔터 닫기
 
-CONV_FORWARD ("R0530"); // 컨베이어 정방향 구동
-CONV_REVERSE ("R0531"); // 컨베이어 역방향 구동
-WIDTH_FORWARD ("R0500"); // 폭조절 정방향 구동
-WIDTH_REVERSE ("R0501"); // 폭조절 역방향 구동
-
-WIDTH_POSITION_CONTROL_STEP_MOTOR ("R050D");
-WIDTH_POSITION_CONTROL ("R050E");
-WIDTH_POSITION_CONTROL_REVERSE ("R050F");
-WIDTH_STOP ("R0512");
-WIDTH_MOVE_DISCHARTGE_POSITON ("R0513");
-WIDTH_CONV_MOVE_ENTRY_POSITON ("R0514");
-
-ERROR_FLAG ("R0580"); // 에러 플래그
-WIDTH_SERVO ("R0507"); // 폭조절 서버 켜기
-CONV_SERVO ("R0527"); // 컨베이어 서버 켜기
 
 
+R0580   ERROR_FLAG // 에러 플래그
 
-간단한시퀀스 객체화 IO맵 상수화 클래스화
+■R0500   WIDTH_FORWARD // 폭조절 정방향 구동
+■R0501   WIDTH_REVERSE // 폭조절 역방향 구동
+★R0502   WIDTH_RETURN_TO_ORIGIN // 폭조절 끝까지 멀어짐 1
+R0503   WIDTH_MOVE_LOCATION_INC
+★R0504   WIDTH_MOVE_LOCATION_ABS // 폭조절 끝까지 다가옴 1
+R0505   WIDTH_AXIS_STOP
+R0506   WIDTH_AXIS_VALUE_CHANGE_REQUEST
+■R0507   WIDTH_AXIS_SERVO // 폭조절 서버 켜기
+■R050D   WIDTH_POSITION_CONTROL_STEP_MOTOR
+■R050E   WIDTH_POSITION_CONTROL
+■R050F   WIDTH_POSITION_CONTROL_REVERSE
+
+R0510   WIDTH_FORWARD
+R0511   WIDTH_REVERSE
+■R0512   WIDTH_STOP
+■R0513   WIDTH_CW_MOVE_DISCHARTGE_POSITON
+■R0514   WIDTH_CCW_MOVE_ENTRY_POSITON
+R0515   WIDTH_CCW_MOVE_DISCHARGE_POSITION
+R0516   WIDTH_CW_MOVE_ENTRY_POSITON
+
+
+
+R0520   CONV_AXIS_JOG_P
+R0521   CONV_AXIS_JOG_S
+R0522   CONV_RETURN_TO_ORIGIN
+R0523   CONV_MOVE_LOCATION_INC
+R0524   CONV_MOVE_LOCATION_ABS
+R0525   CONV_AXIS_STOP
+R0526   CONV_AXIS_VALUE_CHANGE_REQUEST
+■R0527   CONV_SERVO
+R052D   CONV_POSITION_CONTROL_STEP_MOTOR
+R052E   CONV_POSITION_CONTROL
+R052F   CONV_POSITION_CONTROL_REVERSE
+
+■R0530   CONV_FORWARD // 컨베이어 정방향 구동
+■R0531   CONV_REVERSE // 컨베이어 역방향 구동
+R0532   CONV_STOP
+R0533   CONV_CW_MOVE_DISCHARGE_POSITION
+R0534   CONV_CCW_MOVE_ENTRY_POSITION
+R0535   CONV_CCW_MOVE_DISCHARGE_POSITION
+R0536   CONV_CW_MOVE_ENTRY_POSITION
+
+
+
+장비 초기화
+장비 시작 : 컨베이어 시작
+장비 정지 : 모든 서버 정지 후 가동
+보드 릴리즈(풀어주기) : ?
+
+보드 멈춤(홈센서 위치시) : 스메마 후 보드 멈춤
+보드 보내기(컴플리트) : 스메마로 후 보드 보내기
+다음 보드 스탑 : 스메마
+
+
 
 스레드 작동여부 판단 //thread.IsAlive
 
-
-
-입력안해도 버튼 더블클릭으로 접점 키고 끄기 편하게
-데이터그리드뷰 파란색 선택됨
-에러 클리어시 버튼 선택됨
-IO맵 리스트 for문으로 줄이기
+에러 클리어 남용시 에러 발생
+IO맵 단순화
+IO맵 최신화
