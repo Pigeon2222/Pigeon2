@@ -765,10 +765,14 @@ git reset --hard origin/master
 -UDP 10일차
 
 ●
-
+ DT
+ 스메마
 
 ◆
+ IO맵 위치 \\192.168.0.150\연구소 전용\09_PSeries\Bosch Interface Map_쇼룸장비
 
+ 장양혁 연구원님 발표
+-정상적인 클라이언트 종료시
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
@@ -873,16 +877,16 @@ X0001   CONV_WIDTH_OVER_SENSOR
 ★X0005   INSPECT_COMPLETE_SWICH
 X0006   DOOR_INTERLOCK_SIGNAL
 X0007   EMERGENCY_STOP_SIGNAL
-★X0008   CONV_IN_SENSOR   // 컨베이어 인 (1,2번)
-★X0009   CONV_SLOW_SENSOR   // 컨베이어 슬로우 (3번)
-★X000A   CONV_OUT_SENSOR   // 컨베이어 아웃 (4,5번)
-X000D   BOARD_AVAILABLE_N_S1_SMEMA
-X000E   NG_BOARD_AVAILABLE_N_S1_SMEMA
-X000F   NOT_BUSY_N_P1_SMEMA
+★X0008   CONV_IN_SENSOR // 컨베이어 인 (1,2번)
+★X0009   CONV_SLOW_SENSOR // 컨베이어 슬로우 (3번)
+★X000A   CONV_OUT_SENSOR // 컨베이어 아웃 (4,5번)
+★X000D   BOARD_AVAILABLE_N_S1_SMEMA // 앞에서 보드 보낼 준비됨 받음
+★X000E   NG_BOARD_AVAILABLE_N_S1_SMEMA // 앞에서 보드 NG남 받음
+★X000F   NOT_BUSY_N_P1_SMEMA // 뒤에서 보드 받을 준비됨 받음
 
 X0028   WIDTH_SERVO_ALARM
 X0029   CONV_SERVO_ALARM
-★X002C   IN_SHUTTLE_OPEN_SENSOR   // 셔터 열림상태
+★X002C   IN_SHUTTLE_OPEN_SENSOR // 셔터 열림상태
 ★X002D   IN_SHUTTLE_CLOSE_SENSOR // 셔터 닫힘상태
 
 
@@ -891,16 +895,16 @@ X0029   CONV_SERVO_ALARM
 ■Y0001   WIDTH_SERVO_CCW
 ■Y0003   CONV_SERVO_CW
 ■Y0004   CONV_SERVO_CCW
-★Y0007   BUZZER   // 부저 울림
-Y000D   NG_BOARD_AVAILABLE_N_P1_SMEMA
-Y000E   NOT_BUSY_N_S1_SMEMA
-Y000F   BOARD_AVAILABLE_N_P1_SMEMA
+★Y0007   BUZZER // 부저 울림
+★Y000D   NG_BOARD_AVAILABLE_N_P1_SMEMA // 뒤에 보드 NG남 보냄
+★Y000E   NOT_BUSY_N_S1_SMEMA // 앞에 보드 받을 준비됨 보냄
+★Y000F   BOARD_AVAILABLE_N_P1_SMEMA // 뒤에 보드 보낼 준비됨 보냄
 
 ■Y0020   WIDTH_SERVO_ON
 Y0021   WIDTH_SERVO_ALARM_RESET
 ■Y0022   CONV_SERVO_ON
 Y0023   CONV_SERVO_ALARM_RESET
-★Y0029   IN_SHUTTLE_CLOSE   // 셔터 닫기
+★Y0029   IN_SHUTTLE_CLOSE // 셔터 닫기
 
 
 
@@ -970,17 +974,35 @@ R0536   CONV_CW_MOVE_ENTRY_POSITION
 -구조 작성(싱글톤, 스테이트)
 -시퀀스(스위치, 이넘)
 
+-DT
+-스메마
 
 
--에러 나면 꺼지게
--값 49를 bool로
--IO맵 필요한 정보만 최신화
--하드코딩(Const, Form, Dio, Sequence)
 
--스메마(스메마와 인센서 모두 작동)
+0050800509
+<01$RD 0F41 0100 7D\r"
+410F 0001
+16655 1
+2만~
+
+00100~ 현재값
+00500~ 모터 가감속시간
+00502~ 가고 싶은 위치값 저장 R0504 저장한 위치로 이동
+00504~ 수동 조그 이동속도
+00506~ 위치이동시 속도
+00508~ 바꾸고싶은 현재 위치값 저장 R0506하면 바꿈
+
+
+
 -DT(속도)
+-스메마(스메마와 인센서 모두 작동)
 -타임아웃
 -폭(캘리브레이션)
+
+-값 49를 bool로
+-IO맵 필요한 정보만 최신화
+-하드코딩(Const_Etc, Form, 오류메시지)
+-복수접점수동읽기를 객체로 읽기
 
 -GUI(사용자, 관리자)
 -시퀀스 순서도
