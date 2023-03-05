@@ -772,7 +772,29 @@ git reset --hard origin/master
  IO맵 위치 \\192.168.0.150\연구소 전용\09_PSeries\Bosch Interface Map_쇼룸장비
 
  장양혁 연구원님 발표
--정상적인 클라이언트 종료시
+-정상적인 클라이언트 종료시(우아한 종료) 메시지 날림
+-TCP서버는 여러 클라이언트와 통신 가능한데 그 이유는 클라이언트에서 접속 시도시 자식 클라이언트로 생성하여 새로운 포트번호를 배정하여 연결시킴, 리스너는 항상 메시지 읽고 있음
+-TCP와 UDP의 차이는 신뢰성 및 신뢰성 구현 위치
+-리턴값이 필요하면 인보크, 아니면 비긴인보크
+-.은 한개만, 아니면 구조 문제 고민, 라이브러리는 .많음
+-BCC가 **이면 믿고 받음, 거리가 멀어지면 데이터가 깨질 수 있어서 BCC와 메시지 비교 확인함, 안 맞으면 에러 던짐
+-PC > PLC(프로그래머 모션 컨트롤러) > 모터, IO(인풋 아웃풋), PC는 모터와 IO를 모르니 PLC만 컨트롤, PC와 PLC는 RS231이나 LAN으로  연결 가능, PLC와 같은 로컬 네트워크망에 묶고 통신은 파나소닉 프로토콜(뮤토콜) 사용, 리틀이 엔드에 있으면 리틀 엔디안
+-시퀀스는 while, switch 사용, 타임아웃과 로그가 가장 중요한 특징
+-객체지향 > 디자인 패턴, 책 '디자인 패턴' 참고
+-개발일정 잘 적기
+-대표님 강조사항(인사, 청소, 웃으며 밥값하자)
+-장비 하나 어느정도 완벽하게 돌리고 현업
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.3.6.월
+-UDP 11일차
+
+●
+
+
+◆
+
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
@@ -787,102 +809,17 @@ git reset --hard origin/master
 
 
 
-public ActionResult WidthHome()
-        {
-            m_widthMotor.Home();
-            return ActionResult.SUCCESS;
-        }
-public void Home()
-        {
-            if (this == null)
-                return;
-
-            m_initDone = false;
-
-            //int direction = (m_direction == 1) ? 1 : 0;
-            m_homeThread = new Thread(delegate () { HomeSequence(m_mode, m_homeDirection); });
-            m_homeThread.Start();
-        }
-public ICommand MachineBtnCommand
-        {
-            get
-            {
-                if (_MachineBtnCommand == null)
-                {
-                    _MachineBtnCommand = new RelayCommand(param => this.MachineBtnClick(param),
-                        null);
-                }
-                return _MachineBtnCommand;
-            }
-        }
-private void MachineBtnClick(object value)
-        {
-            switch(value.ToString())
-            {
-                case "Stop":
-                    MotorStop();
-                    break;
-                case "ServoOn":
-                    ServoOnOff(true);
-                    break;
-                case "ServoOff":
-                    ServoOnOff(false);
-                    break;
-                case "Home":
-                    Homeing();
-                    break;
-                case "RelMove":
-                    RelMove();
-                    break;
-                case "AbsMove":
-                    AbsMove();
-                    break;
-                case "Cal":
-                    Calibration();
-                    break;
-            }
-        }
-private void Homeing()
-        {
-            MotionBoard.getInstance().m_aMotor[m_selectedMotorIndex].m_isCalOperatioin = false;
-            MotionBoard.getInstance().m_aMotor[m_selectedMotorIndex].Home();
-        }
-public void Home()
-        {
-            if (this == null)
-                return;
-
-            m_initDone = false;
-
-            m_homeThread = new Thread(delegate () { HomeSequence(m_mode, m_homeDirection); });
-            m_homeThread.Start();
-        }
-private void HomeSequence(int mode, int direction)
-        {
-            if (ActionResult.SUCCESS == HomeOperation(mode, direction))
-            {
-                double pos = GetPosition();
-                System.Diagnostics.Debug.WriteLine("home pos = {0}", pos);
-                Thread.Sleep(500);
-                SetPosition(m_orgPosValue);
-                Thread.Sleep(500);
-                m_initDone = true;
-            }
-        }
-
-
-
 X0000   CONV_WIDTH_HOME_SENSOR
 X0001   CONV_WIDTH_OVER_SENSOR
-★X0005   INSPECT_COMPLETE_SWICH
+★X0005   INSPECT_COMPLETE_SWICH // 컴플리트 스위치
 X0006   DOOR_INTERLOCK_SIGNAL
 X0007   EMERGENCY_STOP_SIGNAL
 ★X0008   CONV_IN_SENSOR // 컨베이어 인 (1,2번)
 ★X0009   CONV_SLOW_SENSOR // 컨베이어 슬로우 (3번)
 ★X000A   CONV_OUT_SENSOR // 컨베이어 아웃 (4,5번)
-★X000D   BOARD_AVAILABLE_N_S1_SMEMA // 앞에서 보드 보낼 준비됨 받음
-★X000E   NG_BOARD_AVAILABLE_N_S1_SMEMA // 앞에서 보드 NG남 받음
-★X000F   NOT_BUSY_N_P1_SMEMA // 뒤에서 보드 받을 준비됨 받음
+★X000D   FRONT_READY_SMEMA // 앞에서 보드 보낼 준비됨 받음
+★X000E   FRONT_NG_BOARD_SMEMA // 앞에서 보드 NG남 받음
+★X000F   BACK_READY_SMEMA // 뒤에서 보드 받을 준비됨 받음
 
 X0028   WIDTH_SERVO_ALARM
 X0029   CONV_SERVO_ALARM
@@ -891,32 +828,35 @@ X0029   CONV_SERVO_ALARM
 
 
 
-■Y0000   WIDTH_SERVO_CW 
-■Y0001   WIDTH_SERVO_CCW
-■Y0003   CONV_SERVO_CW
-■Y0004   CONV_SERVO_CCW
+Y0000   WIDTH_SERVO_CW 
+Y0001   WIDTH_SERVO_CCW
+Y0003   CONV_SERVO_CW
+Y0004   CONV_SERVO_CCW
 ★Y0007   BUZZER // 부저 울림
-★Y000D   NG_BOARD_AVAILABLE_N_P1_SMEMA // 뒤에 보드 NG남 보냄
-★Y000E   NOT_BUSY_N_S1_SMEMA // 앞에 보드 받을 준비됨 보냄
-★Y000F   BOARD_AVAILABLE_N_P1_SMEMA // 뒤에 보드 보낼 준비됨 보냄
+★Y000D   BACK_SEND_NG_BOARD_SMEMA // 뒤에 보드 NG남 보냄
+★Y000E   FRONT_SEND_READY_SMEMA
+ // 앞에 보드 받을 준비됨 보냄
+★Y000F   BACK_SEND_READY_SMEMA // 뒤에 보드 보낼 준비됨 보냄
 
-■Y0020   WIDTH_SERVO_ON
+Y0020   WIDTH_SERVO_ON
 Y0021   WIDTH_SERVO_ALARM_RESET
-■Y0022   CONV_SERVO_ON
+Y0022   CONV_SERVO_ON
 Y0023   CONV_SERVO_ALARM_RESET
 ★Y0029   IN_SHUTTLE_CLOSE // 셔터 닫기
 
 
 
-R0580   ERROR_FLAG // 에러 플래그
+■R0580   ERROR_FLAG // 에러 플래그
+
+
 
 ★R0500   WIDTH_AXIS_JOG_P // 폭조절 정방향 구동
 ★R0501   WIDTH_AXIS_JOG_S // 폭조절 역방향 구동
-★R0502   WIDTH_RETURN_TO_ORIGIN // 폭조절 끝까지 멀어지나 끝에 반동 있음 1
+★R0502   WIDTH_RETURN_TO_ORIGIN // 폭조절 끝까지 멀어지나 끝에 반동 있음
 R0503   WIDTH_MOVE_LOCATION_INC
-★R0504   WIDTH_MOVE_LOCATION_ABS // 폭조절 끝까지 다가왔었는데 이제 멀어짐 1
+★R0504   WIDTH_MOVE_LOCATION_ABS // 폭 저장한 위치로 이동
 R0505   WIDTH_AXIS_STOP
-R0506   WIDTH_AXIS_VALUE_CHANGE_REQUEST
+★R0506   WIDTH_AXIS_VALUE_CHANGE_REQUEST // 폭 현재값 변경
 ■R0507   WIDTH_AXIS_SERVO // 폭조절 서버 켜기
 ■R050D   WIDTH_POSITION_CONTROL_STEP_MOTOR
 ■R050E   WIDTH_POSITION_CONTROL
@@ -944,13 +884,62 @@ R052D   CONV_POSITION_CONTROL_STEP_MOTOR
 R052E   CONV_POSITION_CONTROL
 R052F   CONV_POSITION_CONTROL_REVERSE
 
-■R0530   CONV_FORWARD // 컨베이어 정방향 구동
-■R0531   CONV_REVERSE // 컨베이어 역방향 구동
+★R0530   CONV_FORWARD // 컨베이어 정방향 구동
+★R0531   CONV_REVERSE // 컨베이어 역방향 구동
 R0532   CONV_STOP
 R0533   CONV_CW_MOVE_DISCHARGE_POSITION
 R0534   CONV_CCW_MOVE_ENTRY_POSITION
 R0535   CONV_CCW_MOVE_DISCHARGE_POSITION
 R0536   CONV_CW_MOVE_ENTRY_POSITION
+
+
+
+★DT00100   WIDTH_AXIS_NOW_LOW // 폭 현재 값 하위
+★DT00101   WIDTH_AXIS_NOW_HIGH // 폭 현재 값 상위
+DT00106   WIDTH_ERROR_CODE_LOW // 폭 에러 코드 하위
+DT00107   WIDTH_ERROR_CODE_HIGH // 폭 에러 코드 상위
+
+DT00108   CONV_AXIS_NOW_LOW // 컨베이어 현재 값 하위
+DT00109   CONV_AXIS_NOW_HIGH // 컨베이어 현재 값 상위
+DT00114   CONV_ERROR_CODE_LOW // 컨베이어 에러 코드 하위
+DT00115   CONV_ERROR_CODE_HIGH // 컨베이어 에러 코드 상위
+
+
+
+★DT00500   WIDTH_AXIS_ACCELERATION_TIME // 폭 가속시간
+★DT00501   WIDTH_AXIS_DECELERATION_TIME // 폭 감속시간
+★DT00502   WIDTH_MOVE_POSITION_SAVE_LOW // 폭 이동위치 값 저장 하위
+★DT00503   WIDTH_MOVE_POSITION_SAVE_HIGH // 폭 이동위치 값 저장 상위
+★DT00504   WIDTH_AXIS_JOG_SPEED_LOW // 폭 조그 수동속도 하위
+★DT00505   WIDTH_AXIS_JOG_SPEED_HIGH // 폭 조그 수동속도 상위
+★DT00506   WIDTH_POSITION_SPEED_LOW // 폭 위치 이동속도 하위
+★DT00507   WIDTH_POSITION_SPEED_HIGH // 폭 위치 이동속도 상위
+★DT00508   WIDTH_POSITION_SAVE_LOW // 폭 현재위치 값 저장 하위
+★DT00509   WIDTH_POSITION_SAVE_HIGH // 폭 현재위치 값 저장 상위
+DT00515   WIDTH_STOP_DELAY_TIME // 폭 스탑 딜레이시간
+
+
+
+DT00500   CONV_AXIS_ACCELERATION_TIME // 컨베이어 가속시간
+DT00501   CONV_AXIS_DECELERATION_TIME // 컨베이어 감속시간
+DT00502   CONV_MOVE_POSITION_SAVE_LOW // 컨베이어 이동위치 값 저장 하위
+DT00503   CONV_MOVE_POSITION_SAVE_HIGH // 컨베이어 이동위치 값 저장 상위
+DT00504   CONV_AXIS_JOG_SPEED_LOW // 컨베이어 조그 수동속도 하위
+DT00505   CONV_AXIS_JOG_SPEED_HIGH // 컨베이어 조그 수동속도 상위
+DT00506   CONV_POSITION_SPEED_LOW // 컨베이어 위치 이동속도 하위
+DT00507   CONV_POSITION_SPEED_HIGH // 컨베이어 위치 이동속도 상위
+DT00508   CONV_POSITION_SAVE_LOW // 컨베이어 현재위치 값 저장 하위
+DT00509   CONV_POSITION_SAVE_HIGH // 컨베이어 현재위치 값 저장 상위
+DT00515   CONV_STOP_DELAY_TIME // 컨베이어 스탑 딜레이시간
+
+
+
+00100 현재값
+00500 모터 가감속시간
+00502 가고 싶은 위치값 저장 R0504 저장한 위치로 이동
+00504 수동 조그 이동속도
+00506 위치이동시 속도
+00508 현재 위치의 값 지정 R0506하면 바꿈
 
 
 
@@ -974,53 +963,45 @@ R0536   CONV_CW_MOVE_ENTRY_POSITION
 -구조 작성(싱글톤, 스테이트)
 -시퀀스(스위치, 이넘)
 
--DT
--스메마
+-시퀀스 49 변수화 및 이넘 수정
+-IO수정 및 리드어드레스 생성, 객체로 읽음(수동읽기 대체)
+-스메마(스메마와 인센서 모두 작동)
 
 
 
+-타임아웃
+
+-GUI(사용자, 관리자, 오류로그)
+-실행한 횟수 뜨게
+
+-시퀀스 순서도
+-클래스 다이어그램
+-진행현황에 언제까지 할건지, 해낸 날짜 적기
+
+
+
+-DT(속도)
+-DT 반환 관련 DIO 271 인트배열선언 const_etc, 폼dt읽기이벤트
 0050800509
 <01$RD 0F41 0100 7D\r"
 410F 0001
 16655 1
 2만~
-
-00100~ 현재값
-00500~ 모터 가감속시간
-00502~ 가고 싶은 위치값 저장 R0504 저장한 위치로 이동
-00504~ 수동 조그 이동속도
-00506~ 위치이동시 속도
-00508~ 바꾸고싶은 현재 위치값 저장 R0506하면 바꿈
-
-
-
--DT(속도)
--스메마(스메마와 인센서 모두 작동)
--타임아웃
 -폭(캘리브레이션)
-
--값 49를 bool로
--IO맵 필요한 정보만 최신화
--하드코딩(Const_Etc, Form, 오류메시지)
--복수접점수동읽기를 객체로 읽기
-
--GUI(사용자, 관리자)
--시퀀스 순서도
--클래스 다이어그램
--진행현황에 GUI 및 화면, 메뉴얼 동작 추가, 언제까지 할건지, 해낸 날짜 적기
-
-
-
 -초기화
--수동조작
 -에러클리어 버튼 없애고 자동으로 실행
--실행한 횟수 뜨게
--.없게 처리
 
+-R100 저장
 -xml(직렬화, 역직렬화)
+-IO맵 필요한 정보만 최신화
+-하드코딩 수정(Const_Etc, Form)
+-수동조작
+
 -모델선택
 -겟프로퍼티
 -파일 시스템 와처
+
+-.없게 처리
 
 
 
