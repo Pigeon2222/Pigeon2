@@ -807,7 +807,7 @@ git reset --hard origin/master
 ★23.3.7.화
 -UDP 12일차
 -발표
--로더, 버퍼, 언로더 장비 교육(박대녕 연구원님)
+-로더, 버퍼, 언로더 장비 사용법 설명(박대녕 연구원님)
 
 ●
  DT
@@ -818,7 +818,7 @@ git reset --hard origin/master
  명칭변경 매니저먼트를 Equip, now를 Cursent, 컴플리트 센서, 스메마 온, 머신스테이트, 머신 레디, 체크
 
 ◆
- 로더, 버퍼, 언로더 장비 교육
+ 로더, 버퍼, 언로더 장비 사용법 설명 (백대녕 연구원님)
  버퍼(50단)- 도어키 확인, 처음 만지는 장비면 이멀전시 대기, 리셋 후에는 초기화, 장비 뒤쪽 스위치 온, 컴퓨터 온, 프로그램 더블클릭, MG(메인 컨트롤러) 리셋 눌러서 모터 전동 붙게
  보드 정보 확인, 권한+ 엔지니어+ 로그인, 모델+ 테스트+ 셀렉트, 초기화, 스타트, 스탑, 스메마 꼽고 세팅에 IO E에 BA(5번째) 눌러서 신호 오는지 확인, 스메마 누르면서 보드 넣기, 덜 들어가면 밀어넣기, 스메마 때기, 오류면 리셋, 보드 빼기
 
@@ -879,6 +879,30 @@ git reset --hard origin/master
 -0050800509 현재위치(외부 문서에 있는 끝 위치, 46333) 저장
 -0050200503 갈 위치(입력된 위치) 저장
 -R0504 이동
+ 시퀀스
+
+◆
+ 장비 설명(박대녕 연구원님)
+-접점 cw(정방향) cw(역방향) 컨베이어가 역방향인 경우가 있음
+-R050D~F 3개와 배출위치 이동, 완료, 정지 모두 off인 상태에서 1개를 On해야 작동
+-배출위치 이동시 in에서 stop으로, 진입위치 이동시 out에서 in으로 이동
+-시퀀스 실행시 gate, stopper 체크 후 로딩
+-구조+ 폼(문서, 머신(시퀀스, 컨베이어(모터)))
+-생성자에서 함수 사용 후 리턴하여 로그화
+-함수가 코드가 동일하더라도 반환값을 다르게 만들어서 리턴으로 로그 체크
+
+ 장비 설명(박대녕 연구원님)
+ 로더, 버퍼
+-렉 빼기(클램프, 리버스)+ 리무브 매거진
+-전기, 프로그램, 공압, 권한, 보드, 초기화, 스타트, 스메마, 스메마(스메마 꾹 누르기)
+-보드 걸리면 비상, 무조건 스탑 누르고 손 대기
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.3.9.목
+-UDP 14일차
+
+●
 
 ◆
 
@@ -1040,7 +1064,7 @@ R0504 이동 _widthMoveLocationAbs
 
 
 
-환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 타임아웃, 시퀀스, 수동동작, xml, 구조정리, 모델선택, 로그화
+환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 시퀀스, 타임아웃, 수동동작, 로그화, xml, 구조정리, 모델선택
 
 
 
@@ -1050,6 +1074,7 @@ R0504 이동 _widthMoveLocationAbs
  명칭변경 매니저먼트를 Equip, now를 Cursent, 컴플리트 센서, 스메마 온, 머신스테이트, 머신 레디, 체크
 
  폭(캘리브레이션, 초기화)
+ 시퀀스
 
 
 
@@ -1063,48 +1088,48 @@ R0504 이동 _widthMoveLocationAbs
 
 
 
-리턴 TIME_OUT 정지, 에러
-리턴 SENSOR_DOUBLE_ON 정지, 에러
+리턴 TIME_OUT = 정지, 에러
+리턴 SENSOR_DOUBLE_ON = 정지, 에러
 
-리턴 IN_SENSOR_ON || _isNextBoardOk || board_empty 가동 _isBoardEmpty false
-리턴 board_coming || _isNextBoardOk || board_empty 가동 _isBoardEmpty false
+리턴 IN_SENSOR_ON && _isNextBoardOk && _isBoardEmpty = 가동 _isBoardEmpty false
+리턴 board_coming && _isNextBoardOk && _isBoardEmpty = 가동 _isBoardEmpty false
 
-SLOW_SENSOR_ON 정지
-COMPLETE_SENSOR_ON _isBoardComplete true
-_isBoardComplete 가동
+SLOW_SENSOR_ON = 정지
+ COMPLETE_SENSOR_ON = _isBoardComplete
+_isBoardComplete = 가동
 
-OUT_SENSOR_ON 정지
- BACK_READY_SMEMA_ON 가동
+OUT_SENSOR_ON = 정지
+ BACK_READY_SMEMA_ON = _isboardPass
+_isboardPass = 가동
+ OUT_SENSOR_ON 꺼지면 = _isBoardEmpty true, _isBoardComplete false, _isboardPass false
 
 
 
- 시퀀스(텍타임이 길면 잘못된 것)
- 수동동작
- 폼 셔틀 개방 옮기기
- 스메마 무시 버튼
- 타임아웃
- 전부로그화
  락 퍼블릭
+ 폼 셔틀 개방 옮기기
+ 시퀀스(텍타임이 길면 잘못된 것)
+ 타임아웃
+ 수동동작
+ 스메마 무시 버튼
+ 실행한 횟수 뜨게
+ 에러클리어 버튼 없애고 자동으로 실행
+ 전부로그화
 
- R100 저장
  xml(직렬화, 역직렬화)
  xml 어드레스(스타트, 엔드) 나누기
- IO맵 필요한 정보만 최신화
- 하드코딩 수정(Const_Etc, Form)
+ R100 저장
  복수접점만 읽어서 저장하는 클래스
- 구조정리
- GUI 클릭시 색 변화, 스크롤락 제외, 체크박스 사용, 색 변경
+ IO맵 필요한 정보만 최신화
 
- 에러클리어 버튼 없애고 자동으로 실행
- 실행한 횟수 뜨게
+ 구조정리(.적게)
+ 하드코딩 수정(Const_Etc, Form)
+ GUI 클릭시 색 변화, 스크롤락 제외, 체크박스 사용, 색 변경
  버튼에 반응 없게
 
  모델선택
  겟프로퍼티
  파일 시스템 와처
  옵저버 패턴
-
- .없게 처리
 
 
 
