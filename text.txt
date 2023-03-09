@@ -903,8 +903,29 @@ git reset --hard origin/master
 -UDP 14일차
 
 ●
+ 셔틀 개방 옮기기
+ 시퀀스
+ 속도
+ 스메마 무시 버튼
+ 원점복귀완료, 위치이동완료 후 실행
+ 타임아웃
 
 ◆
+ 구조 설명(윤익준 상무님)
+-나의 답이 있어야함
+-일일이 답을 원하면 허수아비지, 동료가 아니다
+-이 장비는 내가 가진 코드로 해결되는가? 고민하기
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.3.10.금
+-UDP 15일차
+
+●
+
+
+◆
+
 
 ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
@@ -958,7 +979,8 @@ Y0023   CONV_SERVO_ALARM_RESET
 
 ■R0580   ERROR_FLAG // 에러 플래그
 
-
+★R0102 WIDTH_ORIGIN_ARRIVE // 원점복귀 완료
+★R0103 WIDTH_MOVE_ARRIVE // 위치이동 완료
 
 ★R0500   WIDTH_AXIS_JOG_P // 폭조절 정방향 구동
 ★R0501   WIDTH_AXIS_JOG_S // 폭조절 역방향 구동
@@ -1030,17 +1052,17 @@ DT00515   WIDTH_STOP_DELAY_TIME // 폭 스탑 딜레이시간
 
 
 
-DT00500   CONV_AXIS_ACCELERATION_TIME // 컨베이어 가속시간
-DT00501   CONV_AXIS_DECELERATION_TIME // 컨베이어 감속시간
-DT00502   CONV_MOVE_POSITION_SAVE_LOW // 컨베이어 이동위치 값 저장 하위
-DT00503   CONV_MOVE_POSITION_SAVE_HIGH // 컨베이어 이동위치 값 저장 상위
-DT00504   CONV_AXIS_JOG_SPEED_LOW // 컨베이어 조그 수동속도 하위
-DT00505   CONV_AXIS_JOG_SPEED_HIGH // 컨베이어 조그 수동속도 상위
-DT00506   CONV_POSITION_SPEED_LOW // 컨베이어 위치 이동속도 하위
-DT00507   CONV_POSITION_SPEED_HIGH // 컨베이어 위치 이동속도 상위
-DT00508   CONV_POSITION_SAVE_LOW // 컨베이어 현재위치 값 저장 하위
-DT00509   CONV_POSITION_SAVE_HIGH // 컨베이어 현재위치 값 저장 상위
-DT00515   CONV_STOP_DELAY_TIME // 컨베이어 스탑 딜레이시간
+DT00520   CONV_AXIS_ACCELERATION_TIME // 컨베이어 가속시간
+DT00521   CONV_AXIS_DECELERATION_TIME // 컨베이어 감속시간
+DT00522   CONV_MOVE_POSITION_SAVE_LOW // 컨베이어 이동위치 값 저장 하위
+DT00523   CONV_MOVE_POSITION_SAVE_HIGH // 컨베이어 이동위치 값 저장 상위
+★DT00524   CONV_AXIS_JOG_SPEED_LOW // 컨베이어 속도
+★DT00525   CONV_AXIS_JOG_SPEED_HIGH // 컨베이어 속도
+DT00526   CONV_POSITION_SPEED_LOW // 컨베이어 위치 이동속도 하위
+DT00527   CONV_POSITION_SPEED_HIGH // 컨베이어 위치 이동속도 상위
+DT00528   CONV_POSITION_SAVE_LOW // 컨베이어 현재위치 값 저장 하위
+DT00529   CONV_POSITION_SAVE_HIGH // 컨베이어 현재위치 값 저장 상위
+DT00535   CONV_STOP_DELAY_TIME // 컨베이어 스탑 딜레이시간
 
 
 
@@ -1068,6 +1090,10 @@ R0504 이동 _widthMoveLocationAbs
 
 
 
+ 스레드 작동여부 판단 //thread.IsAlive
+
+
+
  뮤토콜 객체 1개
  락 수정
  udp, 뮤토콜, dio 수정
@@ -1076,90 +1102,47 @@ R0504 이동 _widthMoveLocationAbs
  폭(캘리브레이션, 초기화)
  시퀀스
 
-
-
--컨베이어에 로딩, 언로딩, 모터, 시퀀스, 오토 넣기
--클래스는 모터, 매개변수는 폭 등 여러가지 받아 사용
--컨베이어에 실린더, 모터를 객체로 만들고 실린더.셋(온) 사용
-
- 진행현황 날짜, 내용 표, 공유할 내용만 추가로 슬라이드 작성
- 발표는 어떤 기능을 보여줄 수 있는지 적고 보여주기
- 발표는 이번주에 무엇을 했고, 어떻게 했다.
-
-
-
-리턴 TIME_OUT = 정지, 에러
-리턴 SENSOR_DOUBLE_ON = 정지, 에러
-
-리턴 IN_SENSOR_ON && _isNextBoardOk && _isBoardEmpty = 가동 _isBoardEmpty false
-리턴 board_coming && _isNextBoardOk && _isBoardEmpty = 가동 _isBoardEmpty false
-
-SLOW_SENSOR_ON = 정지
- COMPLETE_SENSOR_ON = _isBoardComplete
-_isBoardComplete = 가동
-
-OUT_SENSOR_ON = 정지
- BACK_READY_SMEMA_ON = _isboardPass
-_isboardPass = 가동
- OUT_SENSOR_ON 꺼지면 = _isBoardEmpty true, _isBoardComplete false, _isboardPass false
-
-
-
- 락 퍼블릭
- 폼 셔틀 개방 옮기기
- 시퀀스(텍타임이 길면 잘못된 것)
- 타임아웃
- 수동동작
+ 셔틀 개방 옮기기
+ 시퀀스
+ 속도
  스메마 무시 버튼
+ 원점복귀완료, 위치이동완료 후 실행
+ 타임아웃
+
+ 끝에서막힘
+ 문열림
+ 수동동작
+ 버튼 클릭시 색 변화
+
+
+
+ 캘리나 초기화 중 버튼 클릭 금지
+ 버튼에 반응 없게
+ 에러클리어 버튼 없애고 조건 만족시 자동 실행
  실행한 횟수 뜨게
- 에러클리어 버튼 없애고 자동으로 실행
- 전부로그화
+ 스크롤락 제외
+ 락 퍼블릭
 
  xml(직렬화, 역직렬화)
  xml 어드레스(스타트, 엔드) 나누기
  R100 저장
  복수접점만 읽어서 저장하는 클래스
  IO맵 필요한 정보만 최신화
+ 플러스P 마이너스M
+ 전부로그화
+
+ 진행현황 날짜, 내용 표, 공유할 내용만 추가로 슬라이드 작성
+ 발표는 어떤 기능을 보여줄 수 있는지 적고 보여주기
+ 발표는 이번주에 무엇을 했고, 어떻게 했다.
 
  구조정리(.적게)
+ ON OFF 클래스 내 변수로
+ 컨베이어에 로딩, 언로딩, 모터, 시퀀스, 오토 넣기
+ 클래스는 모터, 매개변수는 폭 등 여러가지 받아 사용
+ 컨베이어에 실린더, 모터를 객체로 만들고 실린더.셋(온) 사용
  하드코딩 수정(Const_Etc, Form)
- GUI 클릭시 색 변화, 스크롤락 제외, 체크박스 사용, 색 변경
- 버튼에 반응 없게
 
  모델선택
  겟프로퍼티
  파일 시스템 와처
  옵저버 패턴
-
-
-
-스레드 작동여부 판단 //thread.IsAlive
-
- 초기화(보드 사이즈에 맞게 폭 조절)
- 시작(스메마, 인풋센서 대기,
-인풋센서시 컨베이어,
-슬로우센서시 컨베이어멈춤, 스메마, 컴플리트 대기,
-컴플리트시 컨베이어,
-아웃센서시 정지,
-스메마시 컨베이어,
-아웃센서아웃시 컨베이어멈춤, 스메마)
- 정지(정지)
- 보드릴리즈(풀어주기?)
- 컴플리트(컨베이어)
- 다음 보드 스탑(스메마)
-
-변수
-앞에서막힘
-끝에서막힘
-보드겹쳐옴
-도중에사라짐(타임아웃)
-문열림
-인과 슬로우 동시에 켜짐, 동시에 여러보드 있음
-
-상태
-인풋센서 대기(스메마) > 인풋센서
-컨베이어 가동 > 슬로우센서
-컴플리트 대기(스메마) > 컴플리트
-컴플리트 가동 > 아웃센서
-스메마 대기 > 스메마
-보드 배출 > 인풋센서 대기
