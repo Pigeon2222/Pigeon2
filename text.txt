@@ -922,7 +922,31 @@ git reset --hard origin/master
 -UDP 15일차
 
 ●
+ xml(직렬화, 역직렬화)
+ 상위폴더에 저장
 
+public class Xml
+{
+public void Save()
+{
+DioInfo dioInfo = new DioInfo();
+using (StreamWriter fs = new StreamWriter(@"..\..\..\MachineInfo.xml"))
+{
+XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
+xmlSeri.Serialize(fs, dioInfo);
+}
+}
+
+public void Load()
+{
+DioInfo dioInfo = new DioInfo();
+using (StreamReader fs = new StreamReader(@"..\..\..\MachineInfo.xml"))
+{
+XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
+dioInfo = (DioInfo)xmlSeri.Deserialize(fs);
+}
+}
+}
 
 ◆
 
@@ -983,7 +1007,7 @@ Y0023   CONV_SERVO_ALARM_RESET
 ★R0103 WIDTH_MOVE_ARRIVE // 위치이동 완료
 
 ★R0500   WIDTH_AXIS_JOG_P // 폭조절 정방향 구동
-★R0501   WIDTH_AXIS_JOG_S // 폭조절 역방향 구동
+★R0501   WIDTH_AXIS_JOG_M // 폭조절 역방향 구동
 ★R0502   WIDTH_RETURN_TO_ORIGIN // 폭조절 끝까지 멀어지나 끝에 반동 있음
 R0503   WIDTH_MOVE_LOCATION_INC
 ★R0504   WIDTH_MOVE_LOCATION_ABS // 폭 저장한 위치로 이동
@@ -1005,7 +1029,7 @@ R0516   WIDTH_CW_MOVE_ENTRY_POSITON
 
 
 R0520   CONV_AXIS_JOG_P
-R0521   CONV_AXIS_JOG_S
+R0521   CONV_AXIS_JOG_M
 R0522   CONV_RETURN_TO_ORIGIN
 R0523   CONV_MOVE_LOCATION_INC
 R0524   CONV_MOVE_LOCATION_ABS
@@ -1086,7 +1110,7 @@ R0504 이동 _widthMoveLocationAbs
 
 
 
-환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 시퀀스, 타임아웃, 수동동작, 로그화, xml, 구조정리, 모델선택
+환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 시퀀스, 타임아웃, 수동동작, xml, 로그화, 구조정리, 모델선택
 
 
 
@@ -1114,16 +1138,95 @@ R0504 이동 _widthMoveLocationAbs
  수동동작
  버튼 클릭시 색 변화
 
-
-
- 캘리나 초기화 중 버튼 클릭 금지
- 버튼에 반응 없게
- 에러클리어 버튼 없애고 조건 만족시 자동 실행
- 실행한 횟수 뜨게
- 스크롤락 제외
- 락 퍼블릭
-
  xml(직렬화, 역직렬화)
+ 상위폴더에 저장
+
+
+
+public class Xml
+{
+public void Save()
+{
+DioInfo dioInfo = new DioInfo();
+using (StreamWriter fs = new StreamWriter(@"..\..\..\MachineInfo.xml"))
+{
+XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
+xmlSeri.Serialize(fs, dioInfo);
+}
+}
+
+public void Load()
+{
+DioInfo dioInfo = new DioInfo();
+using (StreamReader fs = new StreamReader(@"..\..\..\MachineInfo.xml"))
+{
+XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
+dioInfo = (DioInfo)xmlSeri.Deserialize(fs);
+}
+}
+}
+
+
+
+
+
+  <RefBoard>
+    <Length Unit="mm" Min="10" Max="1000">245</Length>
+  <Timeout>
+    <AccountTimeout Unit="second" Min="0" Max="99999">10</AccountTimeout>
+  <DiList>
+    <DiInfo Num="0x00" Eng="Front of BA SMEMA">전단 BA SMEMA</DiInfo>
+    <DiInfo Num="0x16" Eng="N/A">N/A</DiInfo>
+  <BoardCommInfo>
+      <IP>192.168.10.2</IP>
+      <Port>4000</Port>
+  <DioBlock>
+        <Name>작업 스테이지 컨베이어</Name>
+        <OnOutput Type="Do">0x05</OnOutput>
+        <OffSensor Type="Di">0x07</OffSensor>
+        <OnSensor Type="Di">0x06</OnSensor>
+
+
+
+        public DioBlock(MachineInfo.DioBlockInfo node)
+        {
+            DigitalInput[] aDi = DioBoard.getInstance().m_aDi;
+            DigitalOutput[] aDo = DioBoard.getInstance().m_aDo;
+
+            if (node.OnSensor != null)
+            {
+                int value = (int)new System.ComponentModel.Int32Converter().ConvertFromString(node.OnSensor.Value);
+                m_onInput = aDi[value];
+                m_onInput.m_bAssigned = true;
+            }
+
+m_dioBlock = new DioBlock(ConvInfo.DioBlock);
+
+public DioBlockInfo DioBlock = new DioBlockInfo();
+
+public class DioBlockInfo
+{
+public string Name;
+public DioInfo OffOutput;
+public DioInfo OnOutput;
+public DioInfo OffSensor;
+public DioInfo OnSensor;
+}
+
+public class DioInfo
+{
+[XmlAttribute]
+public DioType Type;
+//[XmlAttribute]
+//public string Name = "NO NAME";
+[XmlText()]
+public string Value;
+}
+
+foreach (MachineInfo.DioInfo item in machineInfo.DioXList)
+
+
+
  xml 어드레스(스타트, 엔드) 나누기
  R100 저장
  복수접점만 읽어서 저장하는 클래스
@@ -1131,11 +1234,19 @@ R0504 이동 _widthMoveLocationAbs
  플러스P 마이너스M
  전부로그화
 
+ 미연결시 에러
+ 캘리나 초기화 중 버튼 클릭 금지
+ 버튼에 반응 없게
+ 에러클리어 버튼 없애고 조건 만족시 자동 실행
+ 실행한 횟수 뜨게
+ 스크롤락 제외
+ 락 퍼블릭
+
  진행현황 날짜, 내용 표, 공유할 내용만 추가로 슬라이드 작성
  발표는 어떤 기능을 보여줄 수 있는지 적고 보여주기
  발표는 이번주에 무엇을 했고, 어떻게 했다.
 
- 구조정리(.적게)
+ 구조정리(선언, 함수, 생성, .적게)
  ON OFF 클래스 내 변수로
  컨베이어에 로딩, 언로딩, 모터, 시퀀스, 오토 넣기
  클래스는 모터, 매개변수는 폭 등 여러가지 받아 사용
@@ -1146,3 +1257,4 @@ R0504 이동 _widthMoveLocationAbs
  겟프로퍼티
  파일 시스템 와처
  옵저버 패턴
+ 발행자 구독자 패턴
