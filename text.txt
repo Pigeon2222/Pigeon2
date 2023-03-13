@@ -487,7 +487,7 @@ form1.Connect_text.BeginInvoke((MethodInvoker)delegate { form1.Connect_text.Text
 
 ★23.2.21.화
 -UDP 3일차
--발표
+-UDP 1주차 발표
 
 ●
  인터널1(폭조절) 인터널2(컨베이어)
@@ -702,7 +702,7 @@ git reset --hard origin/master
 
 ★23.2.28.화
 -UDP 8일차
--발표
+-UDP 2주차 발표
 
 ●
  IO맵 최신화
@@ -806,7 +806,7 @@ git reset --hard origin/master
 
 ★23.3.7.화
 -UDP 12일차
--발표
+-UDP 3주차 발표
 -로더, 버퍼, 언로더 장비 사용법 설명(박대녕 연구원님)
 
 ●
@@ -925,28 +925,77 @@ git reset --hard origin/master
  xml(직렬화, 역직렬화)
  상위폴더에 저장
 
-public class Xml
-{
-public void Save()
-{
-DioInfo dioInfo = new DioInfo();
-using (StreamWriter fs = new StreamWriter(@"..\..\..\MachineInfo.xml"))
-{
-XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
-xmlSeri.Serialize(fs, dioInfo);
-}
-}
+public MachineInfo _machineInfo = new MachineInfo();
 
 public void Load()
 {
-DioInfo dioInfo = new DioInfo();
 using (StreamReader fs = new StreamReader(@"..\..\..\MachineInfo.xml"))
 {
-XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
-dioInfo = (DioInfo)xmlSeri.Deserialize(fs);
+XmlSerializer xmlSeri = new XmlSerializer(typeof(MachineInfo));
+_machineInfo = (MachineInfo)xmlSeri.Deserialize(fs);
 }
 }
+
+public void Save()
+{
+using (StreamWriter fs = new StreamWriter(@"..\..\..\MachineInfo.xml"))
+{
+XmlSerializer xmlSeri = new XmlSerializer(typeof(MachineInfo));
+xmlSeri.Serialize(fs, _machineInfo);
 }
+}
+
+◆
+
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.3.13.월
+-UDP 16일차
+
+●
+ 접점 xml화
+ 시퀀스 업데이트
+ 시퀀스 점검구동
+ 종료버튼
+
+[XmlRoot("MachineInfo")]
+public class MachineInfo
+{
+[XmlElement("DioEtcList")]
+public DioList DioEtcList { get; set; }
+
+[XmlElement("OriginPosition")]
+public string OriginPosition { get; set; }
+}
+
+[XmlRoot("DioList")]
+public class DioList
+{
+[XmlElement("DioInfo")]
+public List<DioInfo> DioInfo { get; set; }
+}
+
+[XmlRoot("DioInfo")]
+public class DioInfo
+{
+[XmlAttribute("Address")]
+public string Address { get; set; }
+[XmlAttribute("Name")]
+public string Name { get; set; }
+}
+
+◆
+ 락은 스태틱
+
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+★23.3.14.화
+-UDP 17일차
+-UDP 4주차발표
+
+●
+ ppt 제작
 
 ◆
 
@@ -961,132 +1010,6 @@ dioInfo = (DioInfo)xmlSeri.Deserialize(fs);
 레이저장비실습, 이름표
 
 카탈로그, 프린트, 파일명규칙, 장비사용법정리, 에어컨배터리
-
-
-
-X0000   CONV_WIDTH_HOME_SENSOR
-X0001   CONV_WIDTH_OVER_SENSOR
-★X0005   INSPECT_COMPLETE_SWICH // 컴플리트 스위치
-X0006   DOOR_INTERLOCK_SIGNAL
-X0007   EMERGENCY_STOP_SIGNAL
-★X0008   CONV_IN_SENSOR // 컨베이어 인 (1,2번)
-★X0009   CONV_SLOW_SENSOR // 컨베이어 슬로우 (3번)
-★X000A   CONV_OUT_SENSOR // 컨베이어 아웃 (4,5번)
-★X000D   FRONT_READY_SMEMA // 앞에서 보드 보낼 준비됨 받음
-★X000E   FRONT_NG_BOARD_SMEMA // 앞에서 보드 NG남 받음
-★X000F   BACK_READY_SMEMA // 뒤에서 보드 받을 준비됨 받음
-
-X0028   WIDTH_SERVO_ALARM
-X0029   CONV_SERVO_ALARM
-★X002C   IN_SHUTTLE_OPEN_SENSOR // 셔터 열림상태
-★X002D   IN_SHUTTLE_CLOSE_SENSOR // 셔터 닫힘상태
-
-
-
-Y0000   WIDTH_SERVO_CW 
-Y0001   WIDTH_SERVO_CCW
-Y0003   CONV_SERVO_CW
-Y0004   CONV_SERVO_CCW
-★Y0007   BUZZER // 부저 울림
-★Y000D   BACK_SEND_NG_BOARD_SMEMA // 뒤에 보드 NG남 보냄
-★Y000E   FRONT_SEND_READY_SMEMA
- // 앞에 보드 받을 준비됨 보냄
-★Y000F   BACK_SEND_READY_SMEMA // 뒤에 보드 보낼 준비됨 보냄
-
-Y0020   WIDTH_SERVO_ON
-Y0021   WIDTH_SERVO_ALARM_RESET
-Y0022   CONV_SERVO_ON
-Y0023   CONV_SERVO_ALARM_RESET
-★Y0029   IN_SHUTTLE_CLOSE // 셔터 닫기
-
-
-
-■R0580   ERROR_FLAG // 에러 플래그
-
-★R0102 WIDTH_ORIGIN_ARRIVE // 원점복귀 완료
-★R0103 WIDTH_MOVE_ARRIVE // 위치이동 완료
-
-★R0500   WIDTH_AXIS_JOG_P // 폭조절 정방향 구동
-★R0501   WIDTH_AXIS_JOG_M // 폭조절 역방향 구동
-★R0502   WIDTH_RETURN_TO_ORIGIN // 폭조절 끝까지 멀어지나 끝에 반동 있음
-R0503   WIDTH_MOVE_LOCATION_INC
-★R0504   WIDTH_MOVE_LOCATION_ABS // 폭 저장한 위치로 이동
-R0505   WIDTH_AXIS_STOP
-★R0506   WIDTH_AXIS_VALUE_CHANGE_REQUEST // 폭 현재값 변경
-■R0507   WIDTH_AXIS_SERVO // 폭조절 서버 켜기
-■R050D   WIDTH_POSITION_CONTROL_STEP_MOTOR
-■R050E   WIDTH_POSITION_CONTROL
-■R050F   WIDTH_POSITION_CONTROL_REVERSE
-
-R0510   WIDTH_FORWARD
-R0511   WIDTH_REVERSE
-■R0512   WIDTH_STOP
-■R0513   WIDTH_CW_MOVE_DISCHARTGE_POSITON
-■R0514   WIDTH_CCW_MOVE_ENTRY_POSITON
-R0515   WIDTH_CCW_MOVE_DISCHARGE_POSITION
-R0516   WIDTH_CW_MOVE_ENTRY_POSITON
-
-
-
-R0520   CONV_AXIS_JOG_P
-R0521   CONV_AXIS_JOG_M
-R0522   CONV_RETURN_TO_ORIGIN
-R0523   CONV_MOVE_LOCATION_INC
-R0524   CONV_MOVE_LOCATION_ABS
-R0525   CONV_AXIS_STOP
-R0526   CONV_AXIS_VALUE_CHANGE_REQUEST
-■R0527   CONV_AXIS_SERVO
-R052D   CONV_POSITION_CONTROL_STEP_MOTOR
-R052E   CONV_POSITION_CONTROL
-R052F   CONV_POSITION_CONTROL_REVERSE
-
-★R0530   CONV_FORWARD // 컨베이어 정방향 구동
-★R0531   CONV_REVERSE // 컨베이어 역방향 구동
-R0532   CONV_STOP
-R0533   CONV_CW_MOVE_DISCHARGE_POSITION
-R0534   CONV_CCW_MOVE_ENTRY_POSITION
-R0535   CONV_CCW_MOVE_DISCHARGE_POSITION
-R0536   CONV_CW_MOVE_ENTRY_POSITION
-
-
-
-★DT00100   WIDTH_AXIS_NOW_LOW // 폭 현재 값 하위
-★DT00101   WIDTH_AXIS_NOW_HIGH // 폭 현재 값 상위
-DT00106   WIDTH_ERROR_CODE_LOW // 폭 에러 코드 하위
-DT00107   WIDTH_ERROR_CODE_HIGH // 폭 에러 코드 상위
-
-DT00108   CONV_AXIS_NOW_LOW // 컨베이어 현재 값 하위
-DT00109   CONV_AXIS_NOW_HIGH // 컨베이어 현재 값 상위
-DT00114   CONV_ERROR_CODE_LOW // 컨베이어 에러 코드 하위
-DT00115   CONV_ERROR_CODE_HIGH // 컨베이어 에러 코드 상위
-
-
-
-★DT00500   WIDTH_AXIS_ACCELERATION_TIME // 폭 가속시간
-★DT00501   WIDTH_AXIS_DECELERATION_TIME // 폭 감속시간
-★DT00502   WIDTH_MOVE_POSITION_SAVE_LOW // 폭 이동위치 값 저장 하위
-★DT00503   WIDTH_MOVE_POSITION_SAVE_HIGH // 폭 이동위치 값 저장 상위
-★DT00504   WIDTH_AXIS_JOG_SPEED_LOW // 폭 조그 수동속도 하위
-★DT00505   WIDTH_AXIS_JOG_SPEED_HIGH // 폭 조그 수동속도 상위
-★DT00506   WIDTH_POSITION_SPEED_LOW // 폭 위치 이동속도 하위
-★DT00507   WIDTH_POSITION_SPEED_HIGH // 폭 위치 이동속도 상위
-★DT00508   WIDTH_POSITION_SAVE_LOW // 폭 현재위치 값 저장 하위
-★DT00509   WIDTH_POSITION_SAVE_HIGH // 폭 현재위치 값 저장 상위
-DT00515   WIDTH_STOP_DELAY_TIME // 폭 스탑 딜레이시간
-
-
-
-DT00520   CONV_AXIS_ACCELERATION_TIME // 컨베이어 가속시간
-DT00521   CONV_AXIS_DECELERATION_TIME // 컨베이어 감속시간
-DT00522   CONV_MOVE_POSITION_SAVE_LOW // 컨베이어 이동위치 값 저장 하위
-DT00523   CONV_MOVE_POSITION_SAVE_HIGH // 컨베이어 이동위치 값 저장 상위
-★DT00524   CONV_AXIS_JOG_SPEED_LOW // 컨베이어 속도
-★DT00525   CONV_AXIS_JOG_SPEED_HIGH // 컨베이어 속도
-DT00526   CONV_POSITION_SPEED_LOW // 컨베이어 위치 이동속도 하위
-DT00527   CONV_POSITION_SPEED_HIGH // 컨베이어 위치 이동속도 상위
-DT00528   CONV_POSITION_SAVE_LOW // 컨베이어 현재위치 값 저장 하위
-DT00529   CONV_POSITION_SAVE_HIGH // 컨베이어 현재위치 값 저장 상위
-DT00535   CONV_STOP_DELAY_TIME // 컨베이어 스탑 딜레이시간
 
 
 
@@ -1110,7 +1033,7 @@ R0504 이동 _widthMoveLocationAbs
 
 
 
-환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 시퀀스, 타임아웃, 수동동작, xml, 로그화, 구조정리, 모델선택
+환경세팅, UDP통신, 단점읽기, 단점쓰기, 복점읽기, 컨베이어구동, 좌우이동시퀀스, 클래스화, IO맵구현, 상수화, 클래스구조정리, GUI, 순서도, 시퀀스, 스메마, DT, 폭, 캘리브레이션, 초기화, 시퀀스, 타임아웃, 수동동작, xml, 구조정리, 로그화, 모델선택
 
 
 
@@ -1141,110 +1064,58 @@ R0504 이동 _widthMoveLocationAbs
  xml(직렬화, 역직렬화)
  상위폴더에 저장
 
-
-
-public class Xml
-{
-public void Save()
-{
-DioInfo dioInfo = new DioInfo();
-using (StreamWriter fs = new StreamWriter(@"..\..\..\MachineInfo.xml"))
-{
-XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
-xmlSeri.Serialize(fs, dioInfo);
-}
-}
-
-public void Load()
-{
-DioInfo dioInfo = new DioInfo();
-using (StreamReader fs = new StreamReader(@"..\..\..\MachineInfo.xml"))
-{
-XmlSerializer xmlSeri = new XmlSerializer(typeof(DioInfo));
-dioInfo = (DioInfo)xmlSeri.Deserialize(fs);
-}
-}
-}
+ 접점 xml화
+ 시퀀스 업데이트
+ 시퀀스 점검구동
+ 종료버튼
+ 락 스태틱
 
 
 
+Form1
 
+MachineInfo
+MachineInfoRecipe
+Const
 
-  <RefBoard>
-    <Length Unit="mm" Min="10" Max="1000">245</Length>
-  <Timeout>
-    <AccountTimeout Unit="second" Min="0" Max="99999">10</AccountTimeout>
-  <DiList>
-    <DiInfo Num="0x00" Eng="Front of BA SMEMA">전단 BA SMEMA</DiInfo>
-    <DiInfo Num="0x16" Eng="N/A">N/A</DiInfo>
-  <BoardCommInfo>
-      <IP>192.168.10.2</IP>
-      <Port>4000</Port>
-  <DioBlock>
-        <Name>작업 스테이지 컨베이어</Name>
-        <OnOutput Type="Do">0x05</OnOutput>
-        <OffSensor Type="Di">0x07</OffSensor>
-        <OnSensor Type="Di">0x06</OnSensor>
+Equip=>Machine +Etc +Sequence +Smema
+Conveyor +Width=>Motor
+
+IOMap +ReadAddress
+
+*Dio
+*Mewtocol
+*Udp
 
 
 
-        public DioBlock(MachineInfo.DioBlockInfo node)
-        {
-            DigitalInput[] aDi = DioBoard.getInstance().m_aDi;
-            DigitalOutput[] aDo = DioBoard.getInstance().m_aDo;
+OriginPosition
 
-            if (node.OnSensor != null)
-            {
-                int value = (int)new System.ComponentModel.Int32Converter().ConvertFromString(node.OnSensor.Value);
-                m_onInput = aDi[value];
-                m_onInput.m_bAssigned = true;
-            }
+DioYList DioYList
+DioRInList DioRConvList DioRWidthList DioEtcList
+DioDtInList DioDtConvList DioDtWidthList
 
-m_dioBlock = new DioBlock(ConvInfo.DioBlock);
+DioInfo DTInfo
 
-public DioBlockInfo DioBlock = new DioBlockInfo();
-
-public class DioBlockInfo
-{
-public string Name;
-public DioInfo OffOutput;
-public DioInfo OnOutput;
-public DioInfo OffSensor;
-public DioInfo OnSensor;
-}
-
-public class DioInfo
-{
-[XmlAttribute]
-public DioType Type;
-//[XmlAttribute]
-//public string Name = "NO NAME";
-[XmlText()]
-public string Value;
-}
-
-foreach (MachineInfo.DioInfo item in machineInfo.DioXList)
+Address Name Value
 
 
 
- xml 어드레스(스타트, 엔드) 나누기
- R100 저장
- 복수접점만 읽어서 저장하는 클래스
- IO맵 필요한 정보만 최신화
- 플러스P 마이너스M
- 전부로그화
+ 폭(캘리브레이션, 초기화)
+ 시퀀스
+ 타임아웃
+ xml(직렬화, 역직렬화)
+ 구조 고민
 
- 미연결시 에러
+-진행현황 날짜, 내용 표, 공유할 내용만 추가로 슬라이드 작성
+-발표는 어떤 기능을 보여줄 수 있는지 적고 보여주기
+-발표는 이번주에 무엇을 했고, 어떻게 했다.
+
+ 시퀀스bool
+ 에러시 스타트 꺼지게
  캘리나 초기화 중 버튼 클릭 금지
- 버튼에 반응 없게
- 에러클리어 버튼 없애고 조건 만족시 자동 실행
  실행한 횟수 뜨게
- 스크롤락 제외
- 락 퍼블릭
-
- 진행현황 날짜, 내용 표, 공유할 내용만 추가로 슬라이드 작성
- 발표는 어떤 기능을 보여줄 수 있는지 적고 보여주기
- 발표는 이번주에 무엇을 했고, 어떻게 했다.
+ 로그화
 
  구조정리(선언, 함수, 생성, .적게)
  ON OFF 클래스 내 변수로
@@ -1253,8 +1124,15 @@ foreach (MachineInfo.DioInfo item in machineInfo.DioXList)
  컨베이어에 실린더, 모터를 객체로 만들고 실린더.셋(온) 사용
  하드코딩 수정(Const_Etc, Form)
 
+ GUI
+ 스크롤락 제외
+ 미연결시 에러
+ 버튼에 반응 없게
+ 에러클리어 버튼 없애고 조건 만족시 자동 실행
+
  모델선택
  겟프로퍼티
  파일 시스템 와처
+
  옵저버 패턴
  발행자 구독자 패턴
